@@ -1,0 +1,9 @@
+.DS_Store
+node_modules
+TODO.md
+lib
+*/build.js
+*.log
+test/e2e/reports
+test/e2e/screenshots
+.idea
