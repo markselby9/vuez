@@ -3,19 +3,14 @@
  */
 import Vue from 'vue/dist/vue.common';
 import Vuez from '../../src/index';
-
+import setup from './setup.spec';
 
 describe('index', () => {
-		beforeAll(function() {
-				Vue.use(Vuez);
+		beforeAll(function () {
+				setup();
 		});
 
-		it('should run test', () => {
-				expect(1).toBe(1);
-		})
-
-		it('should install vuez', ()=>{
+		it('should detect vue', () => {
 				expect(Vue).not.toBe(undefined);
-				expect(Vue.vuez).not.toBe(undefined);
-		})
-})
+		});
+});

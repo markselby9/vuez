@@ -11,7 +11,8 @@
     "clean": "rimraf dist build",
     "lint": "eslint src",
     "test": "npm run test:unit",
-    "test:unit": "karma start --single-run --no-auto-watch karma.config.js"
+    "test:unit": "karma start --single-run --no-auto-watch karma.config.js",
+    "test:unit-dev": "karma start -auto-watch karma.config.js"
   },
   "keywords": [
     "vue",

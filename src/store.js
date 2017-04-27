@@ -3,14 +3,164 @@
  */
 // Center store object
 import $mixin from './mixin';
+import * as _ from 'lodash';
+import {assert} from './util';
 
-let Vue
+let Vue;
 
 export class Store {
 		constructor() {
 				assert(Vue, 'Vuez must be installed by Vue.use(Vuez) before usage');
-				const store = this;
+
+				const state = {}; // state object
+
+				// internal state
+				this._observed = Object.create(null);   // observed object, name and current object value
+				this._unwatchFn = Object.create(null);  // keep unwatch functions for each name
+
+				this._watcherVM = new Vue();
+
+				initVM(this, state);
 		}
+
+		get state() {
+				return this._vm._data.$$state;
+		}
+
+		set state(v) {
+				assert(false, `Use store.replaceState() to explicit replace store state.`);
+		}
+
+		replaceState(state) {
+				this._vm._data.$$state = state;
+		}
+
+		observe(_name, _value) {
+				if (!typeCheck(_name)) {
+						return;
+				}
+				if (!_.isString(_name)) {
+						try {
+								_name = _.toString(_name);
+						} catch (e) {
+								return;
+						}
+				}
+
+				if (arguments.length === 1) {
+						// only _name is passed, something like store.observe('name');
+						// use clone to manually update the value and trigger action
+						Vue.set(this.state, _name, _.clone(this._observed[_name]));
+				}
+				else {
+						if (!_.isUndefined(_value)) {
+								if (_.has(this._observed, _name)){
+										const oldVal = this._observed[_name];
+										// has old value and the old value is the same as new value?
+										if (_.isEqual(oldVal, _value)){
+												// do nothing
+												return getObserved(this, _name);
+										}
+								}
+
+								// set new value
+								setObserved(this, _name, _value);
+						} else {
+								// _value is undefined, treat it as a kind of value
+								setObserved(this, _name, _value);
+						}
+				}
+				return getObserved(this, _name);
+		}
+
+		action(_name, _actionFn) {
+				if (!typeCheck(_name)) {
+						return;
+				}
+				if (!_.isFunction(_actionFn)) {
+						return;
+				}
+
+				const store = this;
+				// set a watch object over $data.state object
+				const unwatchFn = this._watcherVM.$watch(
+						function () {
+								// console.log('watching: ', store.state, _name);
+								return store.state[_name]
+						},
+						function (newVal, oldVal) {
+								// do something
+								_actionFn(store._observed[_name]);
+						},
+						{deep: true, sync: true}
+				);
+				if (_.has(this._unwatchFn, _name)) {
+						// add into the unwatch function array of this name
+						this._unwatchFn[_name].push(unwatchFn);
+				} else {
+						this._unwatchFn[_name] = [unwatchFn];
+				}
+		}
+
+		unobserve(_name) {
+				if (!_.has(this._observed, _name)) {
+						console.warn(`[vuez] observer ${_name} not found, please check the name.`);
+						return;
+				}
+				const unwatchFnArray = this._unwatchFn[_name];
+				_.forEach(unwatchFnArray, (fn) => {
+						// execute the unwatch functions
+						fn();
+				});
+				_.unset(this._observed, _name);
+		}
+}
+
+function getObserved(store, _name) {
+		return store._observed[_name];
+}
+
+function setObserved(store, _name, _value) {
+		const oldVal = store._observed[_name];
+		if (!_.isUndefined(oldVal) && !isSameDataType(oldVal, _value)) {
+				console.warn(`[vuez] please use the same data type for observer [${_name}]'s value.`);
+		}
+		store._observed[_name] = _value;
+		Vue.set(store.state, _name, store._observed[_name]);
+}
+
+function isSameDataType(value1, value2) {
+		// considering these data types:
+		// Numbers, Strings, Booleans, Objects, Functions, Arrays, RegExp, null, undefined
+
+		// using totype function from post: https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+		const toType = function (obj) {
+				return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+		};
+		return _.isEqual(toType(value1), toType(value2));
+}
+
+// check undefined
+function typeCheck(val) {
+		if (_.isUndefined(val) || _.isNull(val)) {
+				return false;
+		}
+		return val;
+}
+
+// init store VM
+function initVM(store, state) {
+		// use a Vue instance to store the state tree
+		// const silent = Vue.config.silent;
+		//
+		let computed = {};  // save things later
+		Vue.config.silent = true;
+		store._vm = new Vue({
+				data: {
+						$$state: state
+				},
+				computed
+		});
 }
 
 export function install($Vue) {
@@ -20,8 +170,10 @@ export function install($Vue) {
 				);
 				return;
 		}
+		//plugin.install.apply(plugin, args);
 		Vue = $Vue;
-		// Vue.vuez = Object.create();
+
+		// add custom hooks
 		$mixin(Vue);
 }
 
