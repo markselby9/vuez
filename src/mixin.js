@@ -1,9 +1,8 @@
 import * as _ from 'lodash';
-import initHook from './api/initHook';
 
 // Apply a mixin globally, which affects every Vue instance created afterwards.
 export default function (Vue) {
-		let version = _.toNumber(Vue.version);
+		let version = _.toNumber(Vue.version.split('.')[0]);
 
 		const _lifecycleHooks = Vue.config._lifecycleHooks;
 		if (_lifecycleHooks) {
@@ -21,8 +20,19 @@ export default function (Vue) {
 								});
 						}
 				} else {
-						// override init and inject vuex init procedure
 						// for 1.x backwards compatibility.
 				}
 		}
 }
+
+function initHook () {
+		const options = this.$options;
+		// store injection
+		if (options.store) {
+				this.$store = options.store;
+		} else if (options.parent && options.parent.$store) {
+				// use parent Vue component's $store
+				this.$store = options.parent.$store;
+		}
+}
+

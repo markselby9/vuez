@@ -9,6 +9,5 @@ test/e2e/screenshots
 .idea
 dist
 bower_components
-build
 coverage
 npm-debug.log
