@@ -163,53 +163,6 @@ function initVM(store, state) {
 		});
 }
 
-function getObserved(store, _name) {
-		return store._observed[_name];
-}
-
-function setObserved(store, _name, _value) {
-		const oldVal = store._observed[_name];
-		if (!_.isUndefined(oldVal) && !isSameDataType(oldVal, _value)) {
-				console.warn(`[vuez] please use the same data type for observer [${_name}]'s value.`);
-		}
-		store._observed[_name] = _value;
-		Vue.set(store.state, _name, store._observed[_name]);
-}
-
-function isSameDataType(value1, value2) {
-		// considering these data types:
-		// Numbers, Strings, Booleans, Objects, Functions, Arrays, RegExp, null, undefined
-
-		// using totype function from post: https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
-		const toType = function (obj) {
-				return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
-		};
-		return _.isEqual(toType(value1), toType(value2));
-}
-
-// check undefined
-function typeCheck(val) {
-		if (_.isUndefined(val) || _.isNull(val)) {
-				return false;
-		}
-		return val;
-}
-
-// init store VM
-function initVM(store, state) {
-		// use a Vue instance to store the state tree
-		// const silent = Vue.config.silent;
-		//
-		let computed = {};  // save things later
-		Vue.config.silent = true;
-		store._vm = new Vue({
-				data: {
-						$$state: state
-				},
-				computed
-		});
-}
-
 export function install($Vue) {
 		if (Vue) {
 				console.error(
