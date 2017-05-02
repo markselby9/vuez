@@ -1,14 +1,15 @@
-import * as _ from 'lodash';
+import toNumber from 'lodash/toNumber';
+import indexOf from 'lodash/indexOf';
 
 // Apply a mixin globally, which affects every Vue instance created afterwards.
 export default function (Vue) {
-		let version = _.toNumber(Vue.version.split('.')[0]);
+		let version = toNumber(Vue.version.split('.')[0]);
 
 		const _lifecycleHooks = Vue.config._lifecycleHooks;
 		if (_lifecycleHooks) {
 				if (version >= 2) {
 						// vue 2.x
-						if (_.indexOf(_lifecycleHooks, 'init') >= 0) {
+						if (indexOf(_lifecycleHooks, 'init') >= 0) {
 								// use init hook
 								Vue.mixin({
 										init: initHook
