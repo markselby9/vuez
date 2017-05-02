@@ -38,12 +38,6 @@
                     v-show="todos.length > remaining"
                     @click="clearCompleted">
                 Clear completed
-
-
-
-
-
-
             </button>
         </footer>
     </section>
@@ -104,7 +98,8 @@
                 e.target.value = ''
             },
             clearCompleted () {
-                this.$store.observe(TODOS_ACTION, _.filter(this.todos, (todo) => !todo.done));
+                this.todos = _.filter(this.todos, (todo) => !todo.done);
+                this.$store.observe(TODOS_ACTION, this.todos);  // trigger action function
             }
         },
         filters: {
