@@ -47,7 +47,6 @@
     import Todo from './components/Todo.vue';
     import Todos from './data/Todos';
     import TodoItem from './data/TodoItem';
-    import * as _ from 'lodash';
     import {STORAGE_KEY, TODOS_ACTION, DELETE_TODO_ACTION} from './data/const';
 
     const filters = {
@@ -98,7 +97,7 @@
                 e.target.value = ''
             },
             clearCompleted () {
-                this.todos = _.filter(this.todos, (todo) => !todo.done);
+                this.todos = this.todos.filter((todo) => !todo.done);
                 this.$store.observe(TODOS_ACTION, this.todos);  // trigger action function
             }
         },

@@ -3,7 +3,17 @@
  */
 // Center store object
 import $mixin from './mixin';
-import * as _ from 'lodash';
+// import lodash functions
+import isString from 'lodash/isString';
+import toString from 'lodash/toString';
+import isUndefined from 'lodash/isUndefined';
+import has from 'lodash/has';
+import isEqual from 'lodash/isEqual';
+import clone from 'lodash/clone';
+import isFunction from 'lodash/isFunction';
+import unset from 'lodash/unset';
+import isNull from 'lodash/isNull';
+import forEach from 'lodash/forEach';
 import {assert} from './util';
 
 let Vue;
@@ -39,9 +49,9 @@ export class Store {
 				if (!typeCheck(_name)) {
 						return;
 				}
-				if (!_.isString(_name)) {
+				if (!isString(_name)) {
 						try {
-								_name = _.toString(_name);
+								_name = toString(_name);
 						} catch (e) {
 								return;
 						}
@@ -50,14 +60,14 @@ export class Store {
 				if (arguments.length === 1) {
 						// only _name is passed, something like store.observe('name');
 						// use clone to manually update the value and trigger action
-						Vue.set(this.state, _name, _.clone(this._observed[_name]));
+						Vue.set(this.state, _name, clone(this._observed[_name]));
 				}
 				else {
-						if (!_.isUndefined(_value)) {
-								if (_.has(this._observed, _name)) {
+						if (!isUndefined(_value)) {
+								if (has(this._observed, _name)) {
 										const oldVal = this._observed[_name];
 										// has old value and the old value is the same as new value?
-										if (_.isEqual(oldVal, _value)) {
+										if (isEqual(oldVal, _value)) {
 												// do nothing
 												return getObserved(this, _name);
 										}
@@ -77,7 +87,7 @@ export class Store {
 				if (!typeCheck(_name)) {
 						return;
 				}
-				if (!_.isFunction(_actionFn)) {
+				if (!isFunction(_actionFn)) {
 						return;
 				}
 
@@ -94,7 +104,7 @@ export class Store {
 						},
 						{deep: true, sync: true}
 				);
-				if (_.has(this._unwatchFn, _name)) {
+				if (has(this._unwatchFn, _name)) {
 						// add into the unwatch function array of this name
 						this._unwatchFn[_name].push(unwatchFn);
 				} else {
@@ -103,16 +113,16 @@ export class Store {
 		}
 
 		unobserve(_name) {
-				if (!_.has(this._observed, _name)) {
+				if (!has(this._observed, _name)) {
 						console.warn(`[vuez] observer ${_name} not found, please check the name.`);
 						return;
 				}
 				const unwatchFnArray = this._unwatchFn[_name];
-				_.forEach(unwatchFnArray, (fn) => {
+				forEach(unwatchFnArray, (fn) => {
 						// execute the unwatch functions
 						fn();
 				});
-				_.unset(this._observed, _name);
+				unset(this._observed, _name);
 		}
 }
 
@@ -122,7 +132,7 @@ function getObserved(store, _name) {
 
 function setObserved(store, _name, _value) {
 		const oldVal = store._observed[_name];
-		if (!_.isUndefined(oldVal) && !isSameDataType(oldVal, _value)) {
+		if (!isUndefined(oldVal) && !isSameDataType(oldVal, _value)) {
 				console.warn(`[vuez] please use the same data type for observer [${_name}]'s value.`);
 		}
 		store._observed[_name] = _value;
@@ -137,12 +147,12 @@ function isSameDataType(value1, value2) {
 		const toType = function (obj) {
 				return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 		};
-		return _.isEqual(toType(value1), toType(value2));
+		return isEqual(toType(value1), toType(value2));
 }
 
 // check undefined
 function typeCheck(val) {
-		if (_.isUndefined(val) || _.isNull(val)) {
+		if (isUndefined(val) || isNull(val)) {
 				return false;
 		}
 		return val;

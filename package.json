@@ -1,6 +1,6 @@
 {
   "name": "vuez",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple and lightweight state management for vuejs projects.",
   "main": "src/index.js",
   "scripts": {
@@ -39,6 +39,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "loader-utils": "^0.2.12",
+    "lodash-webpack-plugin": "^0.11.3",
     "rimraf": "^2.5.0",
     "todomvc-app-css": "^2.1.0",
     "vue": "^2.1.10",
