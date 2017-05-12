@@ -1,8 +1,12 @@
 {
   "name": "vuez",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple and lightweight state management for vuejs projects.",
-  "main": "src/index.js",
+  "main": "dist/vuez.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "dev": "node examples/server.js",
     "build": "npm run clean && npm run build:dev && npm run build:prd",
