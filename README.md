@@ -16,12 +16,13 @@ Vuez is currently under development, and the document would be updated regularly
 - [x] Backward compatibility for vue 1.x
 - [ ] Better interigation with Vue's lifecycle API
 - [ ] End to end tests
-- [ ] Use eslint
+- [x] Use eslint
+- [x] Use flow
 - [ ] Naive debugger tools with {debug: true} option on when initialize
 - [ ] Auto observe without explicitly call .observe? (idea)
 - [ ] Migrate to Typescript if it can reduce bugs? (idea)
 
-## How about Vuex? What's the difference?
+## Do you know Vuex? What's the difference?
 
 Some peers have mentioned about the confusing difference between Vuez and [Vuex](https://vuex.vuejs.org/). I'd like to say that for these developers below, please **skip Vuez and use Vuex**, at least for now:
 
