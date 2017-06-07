@@ -18,10 +18,11 @@
         },
         methods: {
             action1() {
-                this.$store.observe('action1', { 'text': this.something, number: Math.random() });
+                this.$store.observe('action1', this.something);
+//                this.$store.observe('action1', { 'text': this.something, number: Math.random() });
             },
             action2() {
-                this.$store.observe('action2', Math.random());
+                this.$store.observe('action2', this.something);
             },
         },
     };

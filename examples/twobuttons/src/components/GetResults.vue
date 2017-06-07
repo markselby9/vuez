@@ -12,11 +12,11 @@
     export default {
         created() {
             this.$store.action('action1', (obj) => {
-                this.result1 = 'action1 triggered with parameter: ' + JSON.stringify(obj);
+                this.result1 = 'action1 triggered with parameter: ' + JSON.stringify(obj) + ' number: ' + Math.random();
 //                this.result2 = '';
             });
             this.$store.action('action2', (obj) => {
-                this.result2 = 'action2 triggered with parameter: ' + JSON.stringify(obj);
+                this.result2 = 'action2 triggered with parameter: ' + JSON.stringify(obj) + ' number: ' + Math.random();
 //                this.result1 = '';
             });
         },

@@ -29,7 +29,7 @@ function setObserved(store, _name, _value) {
         console.warn(`[vuez] please use the same data type for observer [${_name}]'s value.`);
     }
     store._observed[_name] = _value;
-    Vue.set(store.state, _name, store._observed[_name]);
+    Vue.set(store.state, _name, clone(_value));
 }
 
 // check undefined
@@ -98,7 +98,7 @@ export class Store {
         if (arguments.length === 1) {
             // only _name is passed, something like store.observe('name');
             // use clone to manually update the value and trigger action
-            Vue.set(this.state, _name, clone(this._observed[_name]));
+            setObserved(this, _name, this._observed[_name]);
         } else if (!isUndefined(_value)) {
             if (has(this._observed, _name)) {
                 const oldVal = this._observed[_name];
@@ -131,9 +131,10 @@ export class Store {
         const unwatchFn = this._watcherVM.$watch(
             () =>
                 // console.log('watching: ', store.state, _name);
-                store.state[_name],
+                store.state[_name] || Object.create({}),
             () => {
                 // do something
+                console.log('action triggered for ', _name, store._observed, store.state);
                 _actionFn(store._observed[_name]);
             },
             { deep: true, sync: true },
