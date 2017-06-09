@@ -2,10 +2,10 @@
     <div>
         <div>
             <label>Give an input, and click to see the actions!</label>
-            <input v-model="something"/>
+            <input v-model="something" class="twobuttons-input"/>
         </div>
-        <button @click="action1"> Fire action1!</button>
-        <button @click="action2"> Fire action2!</button>
+        <button @click="action1" class="twobuttons-btn1"> Fire action1!</button>
+        <button @click="action2" class="twobuttons-btn2"> Fire action2!</button>
     </div>
 </template>
 
@@ -21,7 +21,7 @@
                 this.$store.observe('action1', { 'text': this.something, number: Math.random() });
             },
             action2() {
-                this.$store.observe('action2', Math.random());
+                this.$store.observe('action2', this.something);
             },
         },
     };

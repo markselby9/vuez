@@ -28,7 +28,7 @@ function setObserved(store, _name, _value) {
     if (!isUndefined(oldVal) && !isSameDataType(oldVal, _value)) {
         console.warn(`[vuez] please use the same data type for observer [${_name}]'s value.`);
     }
-    store._observed[_name] = _value;
+    store._observed[_name] = clone(_value);
     Vue.set(store.state, _name, store._observed[_name]);
 }
 
@@ -108,14 +108,13 @@ export class Store {
                     return getObserved(this, _name);
                 }
             }
-
             // set new value
             setObserved(this, _name, _value);
         } else {
             // _value is undefined, treat it as a kind of value
             setObserved(this, _name, _value);
         }
-        return getObserved(this, _name);
+        return _value;
     }
 
     action(_name, _actionFn) {
@@ -127,17 +126,14 @@ export class Store {
         }
 
         const store = this;
+
         // set a watch object over $data.state object
         const unwatchFn = this._watcherVM.$watch(
-            () =>
-                // console.log('watching: ', store.state, _name);
-                store.state[_name],
+            () => store.state[_name],
             () => {
                 // do something
                 _actionFn(store._observed[_name]);
-            },
-            { deep: true, sync: true },
-        );
+            });
         if (has(this._unwatchFn, _name)) {
             // add into the unwatch function array of this name
             this._unwatchFn[_name].push(unwatchFn);

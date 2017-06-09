@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="twobuttons">
         <span>Fire actions here: </span>
         <fire-actions></fire-actions>
         <span>Get results here: </span>

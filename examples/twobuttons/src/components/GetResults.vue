@@ -1,8 +1,8 @@
 <template>
     <div>
-        <span>Result1: {{result1}}</span>
+        <span>Result1: <span class="result1">{{result1}}</span></span>
         <br>
-        <span>Result2: {{result2}}</span>
+        <span>Result2: <span class="result2">{{result2}}</span></span>
     </div>
 </template>
 

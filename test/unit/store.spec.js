@@ -18,7 +18,7 @@ describe('store', () => {
         expect(temp).toBe('bar');
     });
 
-    it('should trigger action correctly', () => {
+    it('should trigger action correctly', (done) => {
         // should trigger action function after observed object has changed,
         // and after calling store.observe()
         const spy = jasmine.createSpy();
@@ -28,10 +28,13 @@ describe('store', () => {
         };
         store.action('changingObject', spy);
         store.observe('changingObject', changingObject);
-        expect(spy).toHaveBeenCalled();
+        Vue.nextTick(() => {
+            expect(spy).toHaveBeenCalled();
+            done();
+        });
     });
 
-    it('support object style', () => {
+    it('support object style', (done) => {
         // should support different data type
         const spy = jasmine.createSpy();
         const store = new Vuez.Store();
@@ -56,11 +59,14 @@ describe('store', () => {
             },
         ]);  // it's different?
         const status2 = store.observe('status', status);
-        expect(spy).toHaveBeenCalled();
-        expect(status2.user.length).toBe(2);
+        Vue.nextTick(() => {
+            expect(status2.user.length).toBe(2);
+            expect(spy).toHaveBeenCalled();
+            done();
+        });
     });
 
-    it('should trigger action with parameter', () => {
+    it('should trigger action with parameter', (done) => {
         // should trigger action function with current value
         const triggerSpy = jasmine.createSpy();
         const store = new Vuez.Store();
@@ -72,12 +78,15 @@ describe('store', () => {
         store.action('observed', triggerSpy);
         observed1.name = 'bob';
         store.observe('observed', observed1);
-        expect(triggerSpy).toHaveBeenCalledWith({
-            name: 'bob',
+        Vue.nextTick(() => {
+            expect(triggerSpy).toHaveBeenCalledWith({
+                name: 'bob',
+            });
+            done();
         });
     });
 
-    it('should allow multiple action for one name', () => {
+    it('should allow multiple action for one name', (done) => {
         const store = new Vuez.Store();
         const spy1 = jasmine.createSpy();
         const spy2 = jasmine.createSpy();
@@ -91,11 +100,14 @@ describe('store', () => {
         // trigger action
         object1.mew = 'miao';
         store.observe('object');
-        expect(spy1).toHaveBeenCalled();
-        expect(spy2).toHaveBeenCalled();
+        Vue.nextTick(() => {
+            expect(spy1).toHaveBeenCalled();
+            expect(spy2).toHaveBeenCalled();
+            done();
+        });
     });
 
-    it('should suggest the same object data type for an observer', () => {
+    it('should suggest the same object data type for an observer', (done) => {
         // if values of two different data type are set for one observer, console would show warning
         const store = new Vuez.Store();
         spyOn(console, 'warn');
@@ -109,15 +121,21 @@ describe('store', () => {
         // trigger action
         object1 = 'miao';
         store.observe('object', object1);
-        expect(spy1).toHaveBeenCalled();
+        Vue.nextTick(() => {
+            expect(spy1).toHaveBeenCalled();
+            done();
+        });
 
         const warnText = `[vuez] please use the same data type for observer [${'object'}]'s value.`;
-        expect(console.warn).toHaveBeenCalledWith(
-            warnText,
-        );
+        Vue.nextTick(() => {
+            expect(console.warn).toHaveBeenCalledWith(
+                warnText,
+            );
+            done();
+        });
     });
 
-    it('should be able to cancel observers and actions on an object', () => {
+    it('should be able to cancel observers and actions on an object', (done) => {
         const spy = jasmine.createSpy();
         const store = new Vuez.Store();
         const changingObject = {
@@ -125,21 +143,26 @@ describe('store', () => {
         };
         const observeObject = store.observe('changingObject', changingObject);
         store.action('changingObject', spy);
-        expect(spy).toHaveBeenCalledTimes(0);
+        Vue.nextTick(() => {
+            expect(spy).toHaveBeenCalledTimes(0);
+            observeObject.number = 2;
+            store.observe('changingObject', observeObject);
 
-        observeObject.number = 2;
-        store.observe('changingObject', observeObject);
-        expect(spy).toHaveBeenCalledTimes(1);
+            Vue.nextTick(() => {
+                expect(spy).toHaveBeenCalledTimes(1);
 
-        // unobserve
-        store.unobserve('changingObject');
-        expect(store.observe('changingObject')).toBeUndefined(); // should be undefined
-        observeObject.number = 3;
-        store.observe('changingObject', observeObject);
-        expect(spy).toHaveBeenCalledTimes(1);   // should not fire spy again
+                // unobserve
+                store.unobserve('changingObject');
+                expect(store.observe('changingObject')).toBeUndefined(); // should be undefined
+                observeObject.number = 3;
+                store.observe('changingObject', observeObject);
+                expect(spy).toHaveBeenCalledTimes(1);   // should not fire spy again
+                done();
+            });
+        });
     });
 
-    it('should not trigger action if the new value is not changed', () => {
+    it('should not trigger action if the new value is not changed', (done) => {
         const spy = jasmine.createSpy();
         const store = new Vuez.Store();
         const changingObject = {
@@ -149,12 +172,18 @@ describe('store', () => {
         store.action('changingObject', spy);
         changingObject.number = 2;
         store.observe('changingObject', changingObject);
-        expect(spy).toHaveBeenCalledTimes(1);
-        const newButSameObject = {
-            number: 2,
-        };
-        store.observe('changingObject', newButSameObject); // should not trigger
-        expect(spy).toHaveBeenCalledTimes(1);
+        Vue.nextTick(() => {
+            expect(spy).toHaveBeenCalledTimes(1);
+            const newButSameObject = {
+                number: 2,
+            };
+            store.observe('changingObject', newButSameObject); // should not trigger
+
+            Vue.nextTick(() => {
+                expect(spy).toHaveBeenCalledTimes(1);
+                done();
+            });
+        });
     });
 
     // TODO: keep the force trigger function?
