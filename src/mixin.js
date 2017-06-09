@@ -1,6 +1,9 @@
+// @flow
+
 /* eslint-disable no-underscore-dangle */
-import toNumber from 'lodash/toNumber';
-import indexOf from 'lodash/indexOf';
+import { toNumber, indexOf } from 'lodash';
+// import toNumber from 'lodash/toNumber';
+// import indexOf from 'lodash/indexOf';
 
 function initHook() {
     const options = this.$options;
@@ -14,9 +17,9 @@ function initHook() {
 }
 
 // Apply a mixin globally, which affects every Vue instance created afterwards.
-export default function (Vue) {
-    const version = toNumber(Vue.version.split('.')[0]);
-    const lifecycleHooks = Vue.config._lifecycleHooks;
+export default function (Vue: Object) {
+    const version: number = toNumber(Vue.version.split('.')[0]);
+    const lifecycleHooks: Array<string> = Vue.config._lifecycleHooks;
 
     if (version >= 2) {
         if (lifecycleHooks) {

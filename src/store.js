@@ -98,7 +98,7 @@ export class Store {
         if (arguments.length === 1) {
             // only _name is passed, something like store.observe('name');
             // use clone to manually update the value and trigger action
-            Vue.set(this.state, _name, clone(this._observed[_name]));
+            setObserved(this, _name, this._observed[_name]);
         } else if (!isUndefined(_value)) {
             if (has(this._observed, _name)) {
                 const oldVal = this._observed[_name];

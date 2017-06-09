@@ -15,7 +15,7 @@ Vuez is currently under development, and the document would be updated regularly
 
 - [x] Backward compatibility for vue 1.x
 - [ ] Better interigation with Vue's lifecycle API
-- [ ] End to end tests
+- [x] End to end tests
 - [x] Use eslint
 - [x] Use flow
 - [ ] Naive debugger tools with {debug: true} option on when initialize
@@ -33,6 +33,24 @@ Some peers have mentioned about the confusing difference between Vuez and [Vuex]
 However, if you're not one of those developers I listed above, and you want to keep things as simple as possible when facing state management, use Vuez cause it's really simple. You can check the example projects for that simplicity. Just keep the 'table' in mind when developing, and that's enough.
 
 And if you faced any issues in your project, please kindly give them to me, or help Vuez with a PR yourself :). I know it's a no-mainstream and not-so-stable choice, but I do think that it has its own advantages, and can become a cool helper in your Vue.js projects.
+
+## Steps for Vuez
+
+1. Install following the 'Installation' part
+
+2. In somewhere you want to trigger an action after a change event, use
+```
+this.$store.action('action_name', (params)=>{
+    //do something
+}
+```
+
+How to define the 'change event'? Simple, by calling
+```
+this.$store.observe('action_name', params);
+```
+
+Then it's done! :)
 
 ## Installation
 
@@ -66,7 +84,7 @@ new Vue({
 
 And then please follow the 'Basic usage' part to use Vuez.
 
-## Basic usage
+## Explain API
 
 In short, Vuez is a centralized monitoring 'store' which is accessible for all your Vue components after installing Vuez.
 From each component, you can access the store through `this.$store`.
@@ -103,7 +121,6 @@ const store = new Vuez.Store();
 let changingObject = {
     number: 1
 };
-store.observe('changing', changingObject);
 store.action('changing', (obj) => {
     console.log(obj.number);
 });
@@ -113,9 +130,10 @@ store.observe('changing', changingObject);  // trigger the action and console wo
 
 ## Example projects
 
-Please check the Vue.js todolist app project using vuez, by running `npm run dev`.
+Code is always better then plain explanation. Please check the Vue.js todolist app project using vuez, by running `npm run dev`.
 
 - [Todo List](https://github.com/markselby9/vuez/tree/develop/examples/todolist)
+- [Twobutton example](https://github.com/markselby9/vuez/tree/develop/examples/twobuttons)
 - [Weather Application](https://github.com/markselby9/vue2-vuez-weather) A weather application using Vuez and Vue2.x.
 
 
