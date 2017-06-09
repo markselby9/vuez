@@ -1,6 +1,6 @@
 {
   "name": "vuez",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "A simple and lightweight state management for vuejs projects.",
   "main": "dist/vuez.js",
   "files": [
