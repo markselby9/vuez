@@ -1,0 +1,10 @@
+[ignore]
+.*/node_modules/.*
+.*/test/.*
+.*/dist/.*
+[include]
+.*/src
+[libs]
+flow-typed
+[options]
+module.file_ext=.js

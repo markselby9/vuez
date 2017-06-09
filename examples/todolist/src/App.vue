@@ -11,12 +11,12 @@
                    placeholder="What needs to be done?"
                    @keyup.enter="addTodo">
         </header>
+        <input class="toggle-all"
+               type="checkbox"
+               @change="toggleAll">
         <!-- main section -->
         <section class="main" v-show="todos.length">
-            <input class="toggle-all"
-                   type="checkbox"
-                   :checked="allChecked"
-                   @change="toggleAll({ done: !allChecked })">
+            <label for="toggle-all">Mark all as complete</label>
             <ul class="todo-list">
                 <todo v-for="(todo, index) in filteredTodos" :key="index" :todo="todo"></todo>
             </ul>
@@ -86,7 +86,7 @@
             },
             remaining () {
                 return this.todos.filter(todo => !todo.done).length
-            }
+            },
         },
         methods: {
             addTodo (e) {
@@ -99,7 +99,11 @@
             clearCompleted () {
                 this.todos = this.todos.filter((todo) => !todo.done);
                 this.$store.observe(TODOS_ACTION, this.todos);  // trigger action function
-            }
+            },
+            toggleAll() {
+            	this.todos.forEach((todo) => todo.done = !todo.done);
+                this.$store.observe(TODOS_ACTION, this.todos);  // trigger action function
+            },
         },
         filters: {
             pluralize: (n, w) => n === 1 ? w : (w + 's'),
