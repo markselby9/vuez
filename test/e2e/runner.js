@@ -1,7 +1,7 @@
-/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-expressions,no-var */
 const spawn = require('cross-spawn');
 
-let args = process.argv.slice(2);
+var args = process.argv.slice(2);
 
 const server = args.indexOf('--dev') > -1
     ? null
